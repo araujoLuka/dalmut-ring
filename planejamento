@@ -1,0 +1,141 @@
+arquivo setup de exemplo:
+    4
+    10.254.225.29
+    10.254.225.28
+    10.254.224.51
+    10.254.224.52
+
+maquina 1 criara o bastão e sera o carteador
+
+---
+
+Ao iniciar um game,
+maquina 'n' espera a maquina anterior enviar mensagem, após isso ela envia uma mensagem para a maquina da frente,
+
+exceto a maquina 1, que envia pra frente direto, esperando a maquina de tras enviar mensagem
+
+quando receber a mensagem de tras é um indicio que as conecções foram feitas
+
+ent uma mensagem confirmando a conecção e todos é enviada do 1S
+
+---
+
+o jogo podera acabar de 2 formas
+
+foi cancelado por input,
+(nesse caso apenas uma mensagem de fim de jogo deve ser enviada)
+
+alguem ganhou
+(nesse caso, uma mensagem de vitoria com quem venceu deve ser enviada)
+
+---
+
+Mensagens:
+    0 - Fim por input
+    1 - fim por vitoria
+
+    2 - jogador venceu
+    3 - Jogada
+
+    4 - Recebendo cartas
+
+    5 - fim de rodada(limpa info das cartas na mesa)
+    6 - Passar bastão
+
+    7 - confirmação inicial de conecção
+    8 - confirmação para iniciar o jogo
+
+INICIO  |   TIPO    |   ORIGEM  |   MENSAGEM    |   CONFIRMACOES    |   FIM
+1 byte      1 byte      2 bytes     2 x 1 byte      2 bytes             1 byte
+
+
+TIPO = 0000 0011 (3) = a mensagem é o recebimento de um tipo de cartas
+
+INICIO | FIM = 01111110
+
+ORIGEM = 0000 0000 0000 0100 (16 maquinas max)      * maquina 3 é a origem da mensagem
+
+MENSAGEM = 0000 0000 0000 0000                      * primeiro byte indica o nivel das cartas, segundo a quantidade delas
+(mensagem vazia implica que o jogador origem pulou a rodada)
+
+CONFIRMAÇÕES = 0000 0000 0000 1111                  * todas as maquinas de 1 a 4 confirmaram recebimento da mensagem
+
+---
+
+        QUANTIDADE DE CARTAS
+
+teremos de cartas:
+2x 13 (ou o nivel da carta jogada junto a ele)
+12x 12
+11x 11
+10x 10
+9x 9
+8x 8
+7x 7
+6x 6
+5x 5
+4x 4
+3x 3
+2x 2
+1x 1
+
+---
+
+NOS APENAS SIMULAREMOS 1 MÃO, logo o carteador somente dara cartas 1 vez
+ao chegarmos no fim de cartas um vencedor é apurado e acaba o jogo
+
+---
+
+COMO O JOGO FUNCIONARA
+
+
+
+[   *FASE DANDO CARTAS*
+
+    Apos a conecção ser feita, o carteador seta o bastão em si e começa a enviar cartas,
+    ele envia 1 tipo com sua quantidade por vez para 1 maquina.
+    O carteador tambem é um jogador, sendo ele sempre a maquina 1, ele gira mensagem de inicio de jogo.
+    ao receber a confirmação ele se torna um jogador e começa a jogar, possuindo o bastão.
+
+]
+
+[   *JOGO BASE*
+
+    O jogador com o bastão joga x cartas de nivel y, a mensagem gira pra todos confirmarem
+    ao receber a confirmação, o jogador com o bastão da ele para o proximo
+
+    O proximo pode pular a rodada ou jogar x cartas de nivel igual ou menor, se ele pulou ou jogou a mensagem gira para todos confirmarem
+    Ao confirmarem, o jogador atual passa o bastão para o proximo
+
+]
+
+[   *CASO TODOS PULARAM*
+
+    REPETE até o seguinte caso acontecer
+
+    Não é possivel jogar mais cartas, por qualquer motivo, forçando todos a pularem.
+    Quando pulam a mesma quantidade de jogadores que de maquinas seguidos, implica que a rodada acabou.
+
+    todas as maquinas jogador devem fazer essa analise, não só o carteador
+
+    deve ser salvo quem foi o ultimo a jogar alguma coisa, esse recebe o bastão novamente e limpamos as cartas da mesa
+    assim qualquer carta pode ser jogada novamente.
+
+]
+
+[   *VITORIA DE 1 JOGADOR*
+
+    REPETE até um jogador ficar sem cartas, esse decreta sua vitoria.
+    sua posição é salva por todos os jogadores e ele se torna apenas um observador do jogo.
+
+]
+
+[   *VITORIA DE TODOS JOGADORES*
+
+    REPETE até todos os jogadores ficarem sem cartas;
+    O ultimo jogador restante vence automaticamente, em ultimo lugar, para n ficar jogando sozinho
+    Nessa situação o jogo acaba por "fim por vitoria"
+
+]
+
+alternativamente, um fim por input pode acontecer a qualquer momento, encerrando o jogo prematuramente
