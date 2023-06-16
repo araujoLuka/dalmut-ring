@@ -7,7 +7,6 @@ OBJ = $(SRC:.c=.o)
 
 
 all : $(EXE) clean
-	@clear
 
 
 #--
