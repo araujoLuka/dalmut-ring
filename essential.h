@@ -10,6 +10,8 @@
 
 #include <errno.h>
 #include <arpa/inet.h>
+#include <sys/ioctl.h>
+#include <net/if.h>
 
 #include "./SourceCode/cartas.h"
 #include "./SourceCode/jogo.h"
