@@ -39,3 +39,7 @@ void passar_bastao(int id);
 // verifica se todas as maquinas pularam seguido
 // se sim envia mensagem para comecar uma nova rodada
 void verifica_pulos_seguidos();
+
+
+// inicia as variaveis do jogo e alloca espaco
+void init_jogo();
