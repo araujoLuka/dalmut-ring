@@ -22,9 +22,9 @@ extern estado_jogo jogo;
 void ler_setup() {
 
     // abre o arquivo setup.txt
-    FILE* file = fopen("../setup.txt", "r");
+    FILE* file = fopen("./setup.txt", "r");
     if (file == NULL) {
-        fprintf(stderr, "ERRO: ao abrir arquivo setup.txt");
+        fprintf(stderr, "ERRO: ao abrir arquivo setup.txt\n");
         return;
     }
 
@@ -74,7 +74,7 @@ void ler_setup() {
 void abrir_socket() {
     computador.socket = socket(PF_INET, SOCK_DGRAM, 0);
     if (computador.socket < 0) {
-        fprintf(stderr, "ERRO: na criacao socket");
+        fprintf(stderr, "ERRO: na criacao socket\n");
     }
 
     //
@@ -123,7 +123,7 @@ void obtem_id() {
 
     //
 
-    fprintf(stderr, "ERRO: ip dessa maquina nao esta em setup.txt");
+    fprintf(stderr, "ERRO: ip dessa maquina nao esta em setup.txt\n");
     return;
 }
 
@@ -140,7 +140,7 @@ void id_vizinhos() {
     computador.id_next = (computador.id + 1) % computador.qtd_maquinas;
 
     if (computador.id_next == computador.id) {
-        fprintf(stderr, "ERRO: id do proximo eh igual o atual");
+        fprintf(stderr, "ERRO: id do proximo eh igual o atual\n");
         return;
     }
 
@@ -152,7 +152,7 @@ void id_vizinhos() {
     }
 
     if (computador.id_prev == computador.id) {
-        fprintf(stderr, "ERRO: id do anterior eh igual o atual");
+        fprintf(stderr, "ERRO: id do anterior eh igual o atual\n");
         return;
     }
 
