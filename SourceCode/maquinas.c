@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 #include "../essential.h"
 
 
@@ -33,7 +31,7 @@ void ler_setup() {
     //
 
     // obtem quantas maquinas teremos no total
-    fscanf(file, "%d", computador.qtd_maquinas);
+    fscanf(file, "%d", &computador.qtd_maquinas);
 
     //
 
@@ -53,6 +51,8 @@ void ler_setup() {
 
     //
 
+    computador.confirmacao_completa = 0;
+
     // calcula os bits de confirmacao quando completo
     for (int i = 0; i < computador.qtd_maquinas; i++) {
         computador.confirmacao_completa = computador.confirmacao_completa | (1 << i);
@@ -70,9 +70,45 @@ void ler_setup() {
 
 
 
+// abrir o socket
+void abrir_socket() {
+    computador.socket = socket(PF_INET, SOCK_DGRAM, 0);
+    if (computador.socket < 0) {
+        fprintf(stderr, "ERRO: na criacao socket");
+    }
+
+    //
+
+    struct sckaddr_in name;
+    name.sin_family = AF_INET;
+    name.sin_addr.s_addr = INADDR_ANY;
+    name.sin_port = PORT;
+
+    size_t size = sizeof(name);
+
+    //
+
+    if (bind (computador.socket, (struct sockaddr *) &name, size) < 0) {
+        perror ("bind");
+        exit (EXIT_FAILURE);
+    }
+}
+
+
 // obtem o ip dessa maquina
 void obtem_ip() {
-    //computador->ip = obtem ip da propria maquina;
+    
+    abrir_socket();
+
+    //
+
+    struct ifreq ifr;
+
+    ifr.ifr_addr.sa_family = AF_INET;
+    strncpy(ifr.ifr_name, "eth0", IFNAMSIZ-1);
+    ioctl(computador.socket, SIOCGIFADDR, &ifr);
+
+    computador.ip = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
 }
 
 
@@ -99,7 +135,7 @@ void obtem_id() {
 
 // inicia a coneccao entre os vizinhos
 // tanto com o anterior quanto o proximo
-void coneccao_com_vizinhos() {
+void id_vizinhos() {
 
     computador.id_next = (computador.id + 1) % computador.qtd_maquinas;
 
@@ -107,10 +143,6 @@ void coneccao_com_vizinhos() {
         fprintf(stderr, "ERRO: id do proximo eh igual o atual");
         return;
     }
-
-    //
-
-    //computador->socket_next = obtem o socket da conecao
 
     //
 
@@ -124,14 +156,10 @@ void coneccao_com_vizinhos() {
         return;
     }
 
-    //
-
-    //computador->socket_next = obtem o socket da conecao
-
 }
 
 
-//
+// fecha o socket aberto
 void encerra_coneccoes() {
-    
+    close(computador.socket);
 }
