@@ -15,6 +15,8 @@ extern maquina computador;
 
 extern estado_jogo jogo;
 
+extern mensagem recebida;
+
 
 //============================================
 
@@ -208,7 +210,7 @@ void dar_cartas() {
 
     //
 
-    int nivel, conteudo;
+    int nivel;
 
     //
 
@@ -223,11 +225,6 @@ void dar_cartas() {
             while (cartas.cartas[nivel] == 0) {
                 nivel = (nivel + 1) % 13;
             }
-    
-            //
-
-            int nivel = recebida.conteudo1;
-            int id_destino = recebida.conteudo2;
     
             //
             
