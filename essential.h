@@ -10,6 +10,7 @@
 
 #include <errno.h>
 #include <arpa/inet.h>
+#include <sys/socket.h>
 #include <sys/ioctl.h>
 #include <net/if.h>
 
