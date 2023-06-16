@@ -13,4 +13,6 @@ typedef struct game_state {
     int lastPlayed_nivel;       // salva o nivel das ultimas cartas jogadas
     int lastPlayed_quantidade;  // salva a quantidade dessas
     int lastPLayed_player;      // salva quem foi o ultimo jogador a jogar
+
+    int contador_pulos;         // contador de quantos jogadores pularam sem interrupcao
 } game_state;
