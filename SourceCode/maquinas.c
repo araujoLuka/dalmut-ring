@@ -79,7 +79,7 @@ void abrir_socket() {
 
     //
 
-    struct sckaddr_in name;
+    struct sockaddr_in name;
     name.sin_family = AF_INET;
     name.sin_addr.s_addr = INADDR_ANY;
     name.sin_port = PORT;
