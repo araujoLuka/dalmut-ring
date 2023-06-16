@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "../essential.h"
@@ -51,6 +50,17 @@ void ler_setup() {
     for (int i = 0; i < computador.qtd_maquinas; i++) {
         fgets(computador.todos_ips[i], 14, file);
     }
+
+    //
+
+    // calcula os bits de confirmacao quando completo
+    for (int i = 0; i < computador.qtd_maquinas; i++) {
+        computador.confirmacao_completa = computador.confirmacao_completa | (1 << i);
+    }
+    // caso tenha 4 maquinas
+    // teremos cc = 0000 1111
+    // ao fazer um xor desse valor com a confirmacao
+    // se resultar em 0 ent todos os bits batem.
 
 }
 
@@ -124,4 +134,10 @@ void coneccao_com_vizinhos() {
 
     //computador->socket_next = obtem o socket da conecao
 
+}
+
+
+//
+void encerra_coneccoes() {
+    
 }
