@@ -5,11 +5,11 @@ typedef struct maquina {
     int confirmacao_completa;   // salva o valor de todos as maquinas confirmarem
     // simplifica um pouco o codigo e impede calcular td hr isso
 
-    char* ip;                   // ip dessa maquina
+    char ip[14];                // ip dessa maquina
     int id;                     // id dessa maquina no arquivo setup.txt
 
-    int socket_next;            // o socket aberto para a maquina posterios
-    int socket_prev;            // o socket aberto para a maquina anterior
+    int socket;                 // o socket aberto para tds as maquinas
+
 
     int id_next;                // o id da maquina posterior
     int id_prev;                // o id da maquina anterior
@@ -29,7 +29,7 @@ void obtem_id();
 
 // inicia a coneccao entre os vizinhos
 // tanto com o anterior quanto o proximo
-void coneccao_com_vizinhos();
+void id_vizinhos();
 
 //
 void encerra_coneccoes();
