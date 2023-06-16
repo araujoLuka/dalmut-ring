@@ -216,3 +216,47 @@ int loop_jogo() {
     encerra_coneccoes();
     return 0;
 }
+
+
+
+//-----------------------------------------------------------------
+
+
+// inicia as variaveis do jogo e alloca espaco
+void init_jogo() {
+    ler_setup();
+
+    //
+
+    jogo.bastao = 0;
+    jogo.contador_pulos = 0;
+    jogo.estado_jogo = JOGO_ESTADO_CONECCOES;
+
+    jogo.id_terminados = malloc(computador.qtd_maquinas * sizeof(int));
+    jogo.qtd_terminados = 0;
+
+    jogo.lastPlayed_nivel = 0;
+    jogo.lastPlayed_quantidade = 0;
+    jogo.lastPLayed_player = 0;
+
+    jogo.terminou = 0;
+
+    //
+
+    obtem_ip();
+    obtem_id();
+
+    //
+
+    if (computador.id == 0) {
+        jogo.bastao = 1;
+    }
+
+    //
+
+    coneccao_com_vizinhos();
+
+    //
+
+    loop_jogo();
+}
