@@ -79,7 +79,7 @@ void decreta_vitoria() {
 
 // verifica se esse eh o ultimo jogador faltando
 // se sim decreta vitoria
-int verifica_ultimo_jogador() {
+void verifica_ultimo_jogador() {
     if (jogo.qtd_terminados >= computador.qtd_maquinas - 1) {
         // logo esse eh o ultimo jogador
         decreta_vitoria();
@@ -150,6 +150,10 @@ int loop_jogo() {
 
     int input;
     while(jogo.estado_jogo == JOGO_ESTADO_INICIADO) {
+        verifica_ultimo_jogador();
+        
+        //
+        
         if (!jogo.bastao) {
             printf("\nVoce nao possui o bastao, esperando mensagem...\n");
             protocolo_de_tratamento();
