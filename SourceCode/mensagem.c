@@ -65,6 +65,7 @@ void enviar_mensagem(char tipo, char origem, int confirmacao, char conteudo1, ch
 int receber_mensagem() {
 
     char message[sizeof(mensagem)];
+
     struct sockaddr_in from;
     size_t size;
     int nbytes;
@@ -73,7 +74,7 @@ int receber_mensagem() {
 
     size = sizeof (from);
 
-    nbytes = recvfrom(computador.socket, message, strlen(message)+1, 0,
+    nbytes = recvfrom(computador.socket, message, sizeof(mensagem), 0,
                    (struct sockaddr *) &from, (unsigned int *)&size);
 
     //
