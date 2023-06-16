@@ -1,5 +1,6 @@
-typedef struct machine {
+typedef struct maquina {
     int qtd_maquinas;   // de setup.txt, obtem a quantidade de maquinas
+    char** todos_ips;   // de setup.txt, obtem todos os ips em ordem
 
     char* ip;           // ip dessa maquina
     int id;             // id dessa maquina no arquivo setup.txt
@@ -9,4 +10,4 @@ typedef struct machine {
 
     char* ip_next;      // o ip da maquina posterior
     char* ip_prev;      // o ip da maquina anterior
-} machine;
+} maquina;
