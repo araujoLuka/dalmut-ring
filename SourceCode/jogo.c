@@ -150,10 +150,6 @@ int loop_jogo() {
 
     int input;
     while(jogo.estado_jogo == JOGO_ESTADO_INICIADO) {
-        verifica_ultimo_jogador();
-        
-        //
-        
         if (!jogo.bastao) {
             printf("\nVoce nao possui o bastao, esperando mensagem...\n");
             protocolo_de_tratamento();
@@ -162,6 +158,10 @@ int loop_jogo() {
         //
 
         if (jogo.bastao) {
+            verifica_ultimo_jogador();
+
+            //
+
             if (jogo.terminou) {
                 passar_bastao(computador.id_next);
             }
