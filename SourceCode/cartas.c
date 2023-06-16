@@ -179,11 +179,7 @@ void jogar_cartas() {
 
     //
 
-    int conteudo = (nivel) | (quantidade + coringas << 8);
-    // primeiro byte eh o tipo
-    // segundo byte a quantidade
-
-    enviar_mensagem((char) MEN_JOGADA, computador.id, (1 << computador.id), conteudo);
+    enviar_mensagem((char) MEN_JOGADA, computador.id, (1 << computador.id), (char)nivel, (char)(quantidade + coringas));
     protocolo_de_tratamento();
 
     //
@@ -229,13 +225,14 @@ void dar_cartas() {
             }
     
             //
-    
-            conteudo = (nivel) | (id_prox_a_ganhar_carta << 8);
+
+            int nivel = recebida.conteudo1;
+            int id_destino = recebida.conteudo2;
     
             //
             
             cartas.cartas[nivel] --;
-            enviar_mensagem((char) MEN_COMPRANDO_CARTA, computador.id, (1 << computador.id), conteudo);
+            enviar_mensagem((char) MEN_COMPRANDO_CARTA, computador.id, (1 << computador.id), (char)nivel, (char)id_prox_a_ganhar_carta);
             protocolo_de_tratamento();
 
         }
