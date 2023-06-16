@@ -31,7 +31,7 @@ void passar_bastao(int id) {
 
     //
 
-    enviar_mensagem((char) MEN_BASTAO, (char) computador.id, (1 << computador.id), id);
+    enviar_mensagem((char) MEN_BASTAO, (char) computador.id, (1 << computador.id), (char)id, 0);
     protocolo_de_tratamento();
 }
 
@@ -50,7 +50,7 @@ void verifica_pulos_seguidos() {
 
         //
 
-        enviar_mensagem((char) MEN_RODADA_ACABOU, (char) computador.id, (1 << computador.id), 0);
+        enviar_mensagem((char) MEN_RODADA_ACABOU, (char) computador.id, (1 << computador.id), 0, 0);
         protocolo_de_tratamento();
 
         //
@@ -72,7 +72,7 @@ void decreta_vitoria() {
 
     //
 
-    enviar_mensagem((char) MEN_JOGADOR_VENCEU, (char) computador.id, 0, 0);
+    enviar_mensagem((char) MEN_JOGADOR_VENCEU, (char) computador.id, 0, 0, 0);
     protocolo_de_tratamento();
 }
 
@@ -110,7 +110,7 @@ void verifica_vitoria() {
 int loop_jogo() {
 
     while(jogo.estado_jogo == JOGO_ESTADO_CONECCOES) {
-        // elabora as coneccoes
+        protocolo_de_tratamento();
     }
 
     //-----------------------------------------------------------------
@@ -136,7 +136,7 @@ int loop_jogo() {
 
             //
 
-            enviar_mensagem((char) MEN_JOGO_INI, computador.id, (1 << computador.id), 0);
+            enviar_mensagem((char) MEN_JOGO_INI, computador.id, (1 << computador.id), 0, 0);
             protocolo_de_tratamento();
         }
     }
@@ -176,13 +176,13 @@ int loop_jogo() {
                 break;
 
                 case(2) :   // Pula sua vez
-                    enviar_mensagem((char) MEN_PULANDO, (char)computador.id, (1 << computador.id), 0);
+                    enviar_mensagem((char) MEN_PULANDO, (char)computador.id, (1 << computador.id), 0, 0);
                     protocolo_de_tratamento();
                     passar_bastao(computador.id_next);
                 break;
 
                 case(3) :   // ENCERRA JOGO
-                    enviar_mensagem((char) MEN_EXIT, (char)computador.id, (1 << computador.id), 0);
+                    enviar_mensagem((char) MEN_EXIT, (char)computador.id, (1 << computador.id), 0, 0);
                     protocolo_de_tratamento();
                 break;
             }
@@ -254,7 +254,7 @@ void init_jogo() {
 
     //
 
-    coneccao_com_vizinhos();
+    id_vizinhos();
 
     //
 
