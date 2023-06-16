@@ -81,12 +81,6 @@ void obtem_id() {
     for (int i = 0; i < computador.qtd_maquinas; i++) {
         if (computador.ip == computador.todos_ips[i]) {
             computador.id = i;
-
-            // sendo o primeiro id ele recebe o bastão
-            if (computador.id == 0) {
-                jogo.bastao = 1;
-            }
-
             return;
         }
     }
