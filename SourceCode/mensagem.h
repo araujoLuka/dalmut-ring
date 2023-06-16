@@ -1,13 +1,14 @@
 typedef struct mensagem {
 
-    char conteudo1;       // 1 byte de conteudo
-    char conteudo2;       // 1 byte de conteudo 2
+    char conteudo1;         // 1 byte de conteudo
+    char conteudo2;         // 1 byte de conteudo 2
     // (255 max, mas so usaremos, 14(0000 1110) no maximo do maximo)
 
-    char tipo;          // 1 byte, nao sei como isso deve ficar
+    char tipo;              // 1 byte, nao sei como isso deve ficar
 
-    char origem;        // 1 byte, ao sei como isso deve ficar
-    int confirmacao;    // 2 bytes, nao sei como isso deve ficar
+    char origem;            // 1 byte, ao sei como isso deve ficar
+    char confirmacao;       // 1 bytes, nao sei como isso deve ficar
+    // 8 computadores no maximo
 
 } mensagem;
 
