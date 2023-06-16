@@ -40,6 +40,9 @@ void passar_bastao(int id);
 // se sim envia mensagem para comecar uma nova rodada
 void verifica_pulos_seguidos();
 
+// verifica condicao de vitoria
+// se sim decreta vitoria
+void verifica_vitoria()
 
 // inicia as variaveis do jogo e alloca espaco
 void init_jogo();
