@@ -1,3 +1,9 @@
+#ifndef ESSENTIAL__
+
+
+
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,3 +21,10 @@
 
 
 #define PORT 4249
+
+
+
+
+
+#define ESSENTIAL__
+#endif
