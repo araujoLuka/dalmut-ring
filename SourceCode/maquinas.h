@@ -18,5 +18,18 @@ typedef struct maquina {
 
 
 
+// le o arquivo setup.txt e salva seus dados
+void ler_setup();
 
+// obtem o ip dessa maquina
+void obtem_ip();
+
+// tendo o ip, obtem a posicao de id dessa maquina na lista setup.txt
+void obtem_id();
+
+// inicia a coneccao entre os vizinhos
+// tanto com o anterior quanto o proximo
+void coneccao_com_vizinhos();
+
+//
 void encerra_coneccoes();
