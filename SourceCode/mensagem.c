@@ -22,13 +22,39 @@ extern deck cartas;
 
 
 // envia uma mensagem
-void enviar_mensagem(char tipo, char origem, int confirmacao, int conteudo) {
+void enviar_mensagem(char tipo, char origem, int confirmacao, char conteudo1, char conteudo2) {
+
+    enviada.confirmacao = confirmacao;
+    enviada.conteudo1 = conteudo1;
+    enviada.conteudo2 = conteudo2;
+    enviada.origem = origem;
+    enviada.tipo = tipo;
+
+    //
+
+    struct sockaddr_in dest;
+    size_t size;
+    int nbytes;
+
+    //
     
-    // verifica coneccao com o proximo id
+    dest.sin_family = AF_INET;
+    dest.sin_addr.s_addr = inet_addr(dest_addr);
+    dest.sin_port = PORT;
     
     //
 
-    // envia mensagem para o proximo id
+    size = sizeof (dest);
+    nbytes = sendto(computador.socket, (char*) &enviada, sizeof(mensagem), 0, 
+                 (struct sockaddr *) &dest, size)
+
+    //
+
+    if (nbytes < 0)
+    {
+        fprintf(stderr, "failure to send message\n");
+        exit (EXIT_FAILURE);
+    }
 
 }
 
@@ -38,15 +64,33 @@ void enviar_mensagem(char tipo, char origem, int confirmacao, int conteudo) {
 // 0 se nao
 int receber_mensagem() {
 
-    // recebe a mensagem
+    char message[sizeof(mensagem)];
+    struct sockaddr_in from;
+    size_t size;
+    int nbytes;
 
     //
 
-    // desmembra ela e salva nos campos da variavel 'mensagem recebida'
+    size = sizeof (from);
+
+    nbytes = recvfrom(computador.socket, message, strlen(message)+1, 0,
+                   (struct sockaddr *) &from, (unsigned int *)&size);
 
     //
 
-    // return 1 ou 0
+    if (nbytes < 0)
+    {
+        perror ("failure to receive message");
+        exit (EXIT_FAILURE);
+    }
+
+    //
+
+    strcpy((char*) &recebida, message);
+
+    //
+
+    return 1;
 
 }
 
@@ -65,7 +109,6 @@ int verifica_confirmacoes() {
 
     // caso a mensagem tenha dado uma volta completa
     if (recebida.origem == computador.id) {
-
         // caso todos confirmaram
         if ((computador.confirmacao_completa ^ recebida.confirmacao) == 0) {
             return 2;
@@ -75,7 +118,7 @@ int verifica_confirmacoes() {
             fprintf(stderr, "Encerrando o programa\n");
 
             jogo.estado_jogo = JOGO_ESTADO_EXIT;
-            enviar_mensagem((char) MEN_EXIT, (char)computador.id, (1 << computador.id), 0);
+            enviar_mensagem((char) MEN_EXIT, (char)computador.id, (1 << computador.id), 0, 0);
 
             return 1;
         }
@@ -100,6 +143,42 @@ void protocolo_de_tratamento() {
 
     switch(recebida.tipo) {
 
+        case (MEN_CONEXAO) :
+            // confirma recebimento e manda adiante
+
+            // caso tenha dado uma volta completa e todos confirmaram
+
+            // manda novamente com conteudo alterado informando que o jogo comecou
+
+            if (recebida.conteudo1 == 1) {
+                jogo.estado_jogo = JOGO_ESTADO_COMPRANDO;
+            }
+
+            int status = verifica_confirmacoes();
+            switch (status) {
+                case (0) :
+                    // ainda falta maquinas a receber
+                break;
+
+                case (1) :
+                    // um erro aconteceu, sai do codigo
+                    return;
+                break;
+
+                case (2) :
+                    // todos receberam a mensagem ja
+                    if (recebida.conteudo1 == 0) {
+                        enviar_mensagem((char) MEN_CONEXAO, recebida.origem, recebida.confirmacao | (1 << computador.id), (char) 1, recebida.conteudo2);
+                        protocolo_de_tratamento();
+                    }
+                    return;
+                break;
+            }
+
+            enviar_mensagem((char) MEN_CONEXAO, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
+
+        break;
+
         case (MEN_BASTAO) :
             // checa se o campo de conteudo equivale ao id dessa maquina
             // se sim ela recebe o bastao e a mensagem acaba aqui,
@@ -110,7 +189,7 @@ void protocolo_de_tratamento() {
             // manda MEN_EXIT
 
             // essa eh a maquina destino, coleta o bastao
-            if (computador.id == recebida.conteudo) {
+            if (computador.id == recebida.conteudo1) {
                 jogo.bastao = 1;
             }
 
@@ -132,7 +211,7 @@ void protocolo_de_tratamento() {
                 break;
             }
 
-            enviar_mensagem((char) MEN_BASTAO, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo);
+            enviar_mensagem((char) MEN_BASTAO, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
 
         break;
         
@@ -163,7 +242,7 @@ void protocolo_de_tratamento() {
                 break;
             }
 
-            enviar_mensagem((char) MEN_JOGO_INI, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo);
+            enviar_mensagem((char) MEN_JOGO_INI, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
 
         break;
 
@@ -176,6 +255,12 @@ void protocolo_de_tratamento() {
 
             jogo.id_terminados[jogo.qtd_terminados] = recebida.origem;
             jogo.qtd_terminados ++;
+
+            //
+
+            printf("Jogador %d  venceu\n", recebida.origem);
+
+            //
 
             int status = verifica_confirmacoes();
             switch (status) {
@@ -194,7 +279,7 @@ void protocolo_de_tratamento() {
                 break;
             }
 
-            enviar_mensagem((char) MEN_JOGADOR_VENCEU, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo);
+            enviar_mensagem((char) MEN_JOGADOR_VENCEU, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
 
         break;
 
@@ -205,10 +290,8 @@ void protocolo_de_tratamento() {
             // caso o id de origem seja o mesmo que o da maquina
             // nao envia para frente a mensagem pq acabo o anel
             
-            int nivel = (255 & recebida.conteudo);
-            // coleta os primeiros 8 bits da mensagem
-            int id_destino = (recebida.conteudo >> 8);
-            // coleta os proximos 8 bits da mensagem
+            int nivel = recebida.conteudo1;
+            int id_destino = recebida.conteudo2;
 
             //
 
@@ -241,7 +324,7 @@ void protocolo_de_tratamento() {
                 break;
             }
 
-            enviar_mensagem((char) MEN_COMPRANDO_CARTA, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo);
+            enviar_mensagem((char) MEN_COMPRANDO_CARTA, recebida.origem, recebida.confirmacao | (1 << computador.id), (char)recebida.conteudo1, (char)recebida.conteudo2);
         break;
 
 
@@ -256,10 +339,8 @@ void protocolo_de_tratamento() {
             //
 
             jogo.lastPLayed_player = recebida.origem;
-            jogo.lastPlayed_nivel = (255 & recebida.conteudo);
-            // coleta os primeiros 8 bits da mensagem
-            jogo.lastPlayed_quantidade = (recebida.conteudo >> 8);
-            // coleta os proximos 8 bits da mensagem
+            jogo.lastPlayed_nivel = recebida.conteudo1;
+            jogo.lastPlayed_quantidade = recebida.conteudo2;
 
             //
 
@@ -284,7 +365,7 @@ void protocolo_de_tratamento() {
                 break;
             }
 
-            enviar_mensagem((char) MEN_JOGADA, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo);
+            enviar_mensagem((char) MEN_JOGADA, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
         break;
 
 
@@ -320,7 +401,7 @@ void protocolo_de_tratamento() {
                 break;
             }
             
-            enviar_mensagem((char) MEN_PULANDO, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo);
+            enviar_mensagem((char) MEN_PULANDO, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
 
         break;
 
@@ -354,7 +435,7 @@ void protocolo_de_tratamento() {
                 break;
             }
             
-            enviar_mensagem((char) MEN_RODADA_ACABOU, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo);
+            enviar_mensagem((char) MEN_RODADA_ACABOU, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
 
         break;
 
@@ -385,7 +466,7 @@ void protocolo_de_tratamento() {
                 break;
             }
             
-            enviar_mensagem((char) MEN_FIM, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo);
+            enviar_mensagem((char) MEN_FIM, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
 
         break;
 
@@ -415,7 +496,7 @@ void protocolo_de_tratamento() {
                 break;
             }
             
-            enviar_mensagem((char) MEN_EXIT, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo);
+            enviar_mensagem((char) MEN_EXIT, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
 
         break;
 
