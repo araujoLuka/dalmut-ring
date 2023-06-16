@@ -9,6 +9,7 @@
 #include <string.h>
 
 #include <errno.h>
+#include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <sys/ioctl.h>
