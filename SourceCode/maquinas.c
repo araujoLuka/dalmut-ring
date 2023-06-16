@@ -108,7 +108,7 @@ void obtem_ip() {
     strncpy(ifr.ifr_name, "eth0", IFNAMSIZ-1);
     ioctl(computador.socket, SIOCGIFADDR, &ifr);
 
-    computador.ip = inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr);
+    strncpy(computador.ip, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr), 14);
 }
 
 
