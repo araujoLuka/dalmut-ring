@@ -39,14 +39,14 @@ void enviar_mensagem(char tipo, char origem, int confirmacao, char conteudo1, ch
     //
     
     dest.sin_family = AF_INET;
-    dest.sin_addr.s_addr = inet_addr(dest_addr);
+    dest.sin_addr.s_addr = inet_addr(computador.todos_ips[computador.id_next]);
     dest.sin_port = PORT;
     
     //
 
     size = sizeof (dest);
     nbytes = sendto(computador.socket, (char*) &enviada, sizeof(mensagem), 0, 
-                 (struct sockaddr *) &dest, size)
+                 (struct sockaddr *) &dest, size);
 
     //
 
@@ -141,6 +141,9 @@ void protocolo_de_tratamento() {
 
     //
 
+    int status;
+
+    //
     switch(recebida.tipo) {
 
         case (MEN_CONEXAO) :
@@ -154,7 +157,7 @@ void protocolo_de_tratamento() {
                 jogo.estado_jogo = JOGO_ESTADO_COMPRANDO;
             }
 
-            int status = verifica_confirmacoes();
+            status = verifica_confirmacoes();
             switch (status) {
                 case (0) :
                     // ainda falta maquinas a receber
@@ -193,7 +196,7 @@ void protocolo_de_tratamento() {
                 jogo.bastao = 1;
             }
 
-            int status = verifica_confirmacoes();
+            status = verifica_confirmacoes();
             switch (status) {
                 case (0) :
                     // ainda falta maquinas a receber
@@ -225,7 +228,7 @@ void protocolo_de_tratamento() {
 
             jogo.estado_jogo = JOGO_ESTADO_INICIADO;
 
-            int status = verifica_confirmacoes();
+            status = verifica_confirmacoes();
             switch (status) {
                 case (0) :
                     // ainda falta maquinas a receber
@@ -262,7 +265,7 @@ void protocolo_de_tratamento() {
 
             //
 
-            int status = verifica_confirmacoes();
+            status = verifica_confirmacoes();
             switch (status) {
                 case (0) :
                     // ainda falta maquinas a receber
@@ -307,7 +310,7 @@ void protocolo_de_tratamento() {
 
             //
 
-            int status = verifica_confirmacoes();
+            status = verifica_confirmacoes();
             switch (status) {
                 case (0) :
                     // ainda falta maquinas a receber
@@ -348,7 +351,7 @@ void protocolo_de_tratamento() {
 
             //
 
-            int status = verifica_confirmacoes();
+            status = verifica_confirmacoes();
             switch (status) {
                 case (0) :
                     // ainda falta maquinas a receber
@@ -381,7 +384,7 @@ void protocolo_de_tratamento() {
 
             jogo.contador_pulos ++;
 
-            int status = verifica_confirmacoes();
+            status = verifica_confirmacoes();
             switch (status) {
                 case (0) :
                     // ainda falta maquinas a receber
@@ -418,7 +421,7 @@ void protocolo_de_tratamento() {
             jogo.lastPlayed_quantidade = 0;
             jogo.lastPLayed_player = 0;
 
-            int status = verifica_confirmacoes();
+            status = verifica_confirmacoes();
             switch (status) {
                 case (0) :
                     // ainda falta maquinas a receber
@@ -449,7 +452,7 @@ void protocolo_de_tratamento() {
 
             jogo.estado_jogo = JOGO_ESTADO_FIM;
 
-            int status = verifica_confirmacoes();
+            status = verifica_confirmacoes();
             switch (status) {
                 case (0) :
                     // ainda falta maquinas a receber
@@ -479,7 +482,7 @@ void protocolo_de_tratamento() {
 
             jogo.estado_jogo = JOGO_ESTADO_EXIT;
 
-            int status = verifica_confirmacoes();
+            status = verifica_confirmacoes();
             switch (status) {
                 case (0) :
                     // ainda falta maquinas a receber
