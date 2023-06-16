@@ -8,6 +8,7 @@ typedef struct maquina {
     int socket_next;    // o socket aberto para a maquina posterios
     int socket_prev;    // o socket aberto para a maquina anterior
 
-    char* ip_next;      // o ip da maquina posterior
-    char* ip_prev;      // o ip da maquina anterior
+    int id_next;      // o id da maquina posterior
+    int id_prev;      // o id da maquina anterior
+    // os ips podem ser extrapolados da lista de ips
 } maquina;
