@@ -1,84 +1,56 @@
-#include <stddef.h>
-#include <stdio.h>
-#include <errno.h>
 #include <stdlib.h>
-#include <string.h>
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#include <unistd.h>
+#include <signal.h>
+#include "libsocket.h"
 
-#define SERVER	"/tmp/serversocket"
+#define MSG1	"Hello_Louis"
+#define MSG2	"Hello_Lucas"
 #define MAXMSG	512
 
-int make_dgram_socket(char *dest_addr) 
-{
-	struct sockaddr_in dest;
-	int sock;
-	size_t size;
+#define HOST1   "192.168.1.7"
+#define HOST2   "192.168.1.27"
 
-	/* Create the socket. */
-	sock = socket (PF_INET, SOCK_DGRAM, 0);
-	if (sock < 0)
-	{
-		perror ("socket");
-		exit (EXIT_FAILURE);
-	}
+static volatile int keepRunning = 1;
 
-	/* Bind a name to the socket. */
-	dest.sin_family = AF_INET;
-	inet_aton(dest_addr, &dest.sin_addr);
-	dest.sin_port = htons(2253);
-
-	return sock;
+void intHandler(int dummy) {
+    keepRunning = 0;
 }
 
-int main (void)
-{
+int main(int argc, char *argv[]) {
+    int s = 0, r = 0;
+    char message[MAXMSG];
 	int sock;
-	char message[MAXMSG];
-	char *test = "Hello, Louis\n";
-	struct sockaddr_in dest;
-	size_t size;
-	int nbytes;
 
-	/* Make the socket, then loop endlessly. */
-	sock = make_dgram_socket("10.254.225.29");
+    printf("Creating socket\n");
+    sock = makeDgramSocket ();
 
-	size = sizeof(dest);
-	nbytes = sendto(sock, test, strlen(test)+1, 0, (struct sockaddr *) &dest, size);
+	if (argc > 1 && !strcmp(argv[1], "server")) {
+        while(keepRunning) {
+            printf("%d: Sending message '%s' to %s\n", s, MSG1, HOST2);
+            sendMessage(sock, HOST2, MSG1, strlen(MSG1)+1);
+            
+            printf("%d: Receiving message from %s\n", s, HOST2);
+            recvMessage(sock, HOST2, message, MAXMSG);
+            printf("%d: Received %s\n", s, message);
+            
+            sleep(5);
+            s++;
+        }
+    }
+	else {
+        while(keepRunning) {
+            printf("%d: Receiving message from %s\n", r, HOST1);
+            recvMessage(sock, HOST1, message, MAXMSG);
+            printf("%d: Received %s\n", r, message);
 
-	if (nbytes < 0)
-	{
-		perror ("failure to send hello");
-		exit (EXIT_FAILURE);
-	}
+            printf("%d: Sending message '%s' to %s\n", r, MSG2, HOST1);
+            sendMessage(sock, HOST1, "Hello_Lucas", strlen(MSG2)+1);
+            
+            sleep(5);
+            r++;
+        }
+    }
 
-	return 0;
-
-	while (1)
-	{
-	    /* Wait for a datagram. */
-	    size = sizeof (dest);
-	    nbytes = recvfrom (sock, message, MAXMSG, 0,
-	                       (struct sockaddr *) & dest, (unsigned int *)&size);
-	    if (nbytes < 0)
-	    {
-	        perror ("recfrom (server)");
-	        exit (EXIT_FAILURE);
-	    }
-
-	    /* Give a diagnostic message. */
-	    fprintf (stderr, "Server: got message: %s\n", message);
-
-	    /* Bounce the message back to the sender. */
-	    nbytes = sendto (sock, message, nbytes, 0,
-	                     (struct sockaddr *) & dest, size);
-	    if (nbytes < 0)
-		{
-		perror ("sendto (server)");
-		exit (EXIT_FAILURE);
-		}
-	}
+    close(sock);
+    return 0;
 }
-
