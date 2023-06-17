@@ -429,6 +429,12 @@ void protocolo_de_tratamento() {
             jogo.lastPlayed_quantidade = 0;
             jogo.lastPLayed_player = 0;
 
+            //
+
+            printf("Rodada Encerrada, limpando mesa");
+
+            //
+
             status = verifica_confirmacoes();
             switch (status) {
                 case (0) :
