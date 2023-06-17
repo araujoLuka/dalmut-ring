@@ -18,6 +18,9 @@ typedef struct maquina {
 
 
 
+// abrir o socket
+void abrir_socket();
+
 // le o arquivo setup.txt e salva seus dados
 void ler_setup();
 
