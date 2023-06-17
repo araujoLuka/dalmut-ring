@@ -181,9 +181,9 @@ int loop_jogo() {
             //
 
             if (jogo.lastPlayed_nivel < 14) {
-                printf("\nUltima jogada\n [%d] quantidade: %d\n", (jogo.lastPlayed_nivel+1), jogo.lastPlayed_quantidade);
+                printf("\nUltima jogada:\n[%d] quantidade: %d\n", (jogo.lastPlayed_nivel+1), jogo.lastPlayed_quantidade);
             } else {
-                printf("\nUltima jogada\n Nao houve ultima jogada");
+                printf("\nUltima jogada:\nNao houve ultima jogada");
             }
 
             //
