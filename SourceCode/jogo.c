@@ -171,6 +171,10 @@ int loop_jogo() {
 
             //
 
+            printf("Ultima jogada\n [%d] quantidade: %d\n", jogo.lastPlayed_nivel, jogo.lastPlayed_quantidade);
+
+            //
+
             printa_cartas();
 
             printf("\nQual a sua acao?\n");
