@@ -95,6 +95,10 @@ int receber_mensagem() {
 
     //
 
+    fprintf(stderr, "DEBUGG: %d , %d", (int)recebida.origem, (int)recebida.tipo);
+
+    //
+
     return 1;
 
 }
