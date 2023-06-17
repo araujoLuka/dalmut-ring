@@ -124,6 +124,10 @@ void obtem_id() {
 
     //
 
+    computador.confirm_biometria = 1 << computador.id;
+
+    //
+
     fprintf(stderr, "ERRO: ip dessa maquina nao esta em setup.txt\n");
     return;
 }
