@@ -60,13 +60,16 @@ void ler_setup() {
     //
 
     computador.confirmacao_completa = 0;
+    int soma = 1;
 
     // calcula os bits de confirmacao quando completo
     for (int i = 0; i < computador.qtd_maquinas; i++) {
-        computador.confirmacao_completa = computador.confirmacao_completa | (1 << i);
+        computador.confirmacao_completa += soma;
+        
+        soma += i;
     }
     // caso tenha 4 maquinas
-    // teremos cc = 0000 1111
+    // teremos cc = 64
     // ao fazer um xor desse valor com a confirmacao
     // se resultar em 0 ent todos os bits batem.
 
