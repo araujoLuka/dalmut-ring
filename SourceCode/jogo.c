@@ -167,6 +167,9 @@ int loop_jogo() {
 
         if (jogo.bastao) {
             verifica_ultimo_jogador();
+            if (jogo.estado_jogo == JOGO_ESTADO_FIM) {
+                break;
+            }
 
             //
 
