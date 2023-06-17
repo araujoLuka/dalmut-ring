@@ -23,6 +23,9 @@ extern deck cartas;
 
 // envia uma mensagem
 void enviar_mensagem(char tipo, char origem, int confirmacao, char conteudo1, char conteudo2) {
+    usleep(10);
+    
+    //
 
     enviada.confirmacao = confirmacao;
     enviada.conteudo1 = conteudo1;
