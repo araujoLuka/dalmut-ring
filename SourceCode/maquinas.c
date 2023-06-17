@@ -106,7 +106,7 @@ void obtem_ip() {
 // tendo o ip, obtem a posicao de id dessa maquina na lista setup.txt
 void obtem_id() {
     for (int i = 0; i < computador.qtd_maquinas; i++) {
-        if (computador.ip == computador.todos_ips[i]) {
+        if (!strcmp(computador.ip, computador.todos_ips[i])) {
             computador.id = i;
             return;
         }
