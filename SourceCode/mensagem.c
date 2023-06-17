@@ -146,7 +146,7 @@ void protocolo_de_tratamento() {
 
     //
 
-    int status;
+    int status, nivel, id_destino;
 
     //
     switch(recebida.tipo) {
@@ -298,8 +298,8 @@ void protocolo_de_tratamento() {
             // caso o id de origem seja o mesmo que o da maquina
             // nao envia para frente a mensagem pq acabo o anel
             
-            int nivel = recebida.conteudo1;
-            int id_destino = recebida.conteudo2;
+            nivel = recebida.conteudo1;
+            id_destino = recebida.conteudo2;
 
             //
 
