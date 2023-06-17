@@ -171,11 +171,17 @@ int loop_jogo() {
 
             //
 
-            printf("Ultima jogada\n [%d] quantidade: %d\n", jogo.lastPlayed_nivel, jogo.lastPlayed_quantidade);
+            printa_cartas();
 
             //
 
-            printa_cartas();
+            if (jogo.lastPlayed_nivel >= 14) {
+                printf("Ultima jogada\n [%d] quantidade: %d\n", (jogo.lastPlayed_nivel+1), jogo.lastPlayed_quantidade);
+            } else {
+                printf("Ultima jogada\n Nao houve ultima jogada");
+            }
+
+            //
 
             printf("\nQual a sua acao?\n");
             printf("(1) jogar cartas\n");
