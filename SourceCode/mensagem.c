@@ -91,7 +91,7 @@ int receber_mensagem() {
 
     //
 
-    bcopy(message, recebida, sizeof(mensagem));
+    bcopy((void*) message, (void*) &recebida, sizeof(mensagem));
 
     //
 
