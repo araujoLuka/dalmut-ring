@@ -111,6 +111,7 @@ int receber_mensagem() {
 // 1 se deu volta completa e um erro ocorreu
 // 0 se ainda nao deu volta completa
 int verifica_confirmacoes() {
+    fprintf(stderr, "DEBUGG: confirmacao recebida %d , confirmacao total %d\n", (int)recebida.confirmacao, (int)computador.confirmacao_completa);
 
     // caso a mensagem tenha dado uma volta completa
     if (recebida.origem == computador.id) {
