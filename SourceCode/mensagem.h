@@ -26,7 +26,7 @@ typedef struct mensagem {
 
 
 // envia uma mensagem
-void enviar_mensagem(char tipo, char origem, int confirmacao, char conteudo1, char conteudo2);
+void enviar_mensagem(char tipo, char origem, char confirmacao, char conteudo1, char conteudo2);
 
 
 // recebe 1 mensagem e trata ela
