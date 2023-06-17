@@ -170,7 +170,7 @@ void jogar_cartas() {
     //
 
     printf("\nJogada bem sucedida\n");
-    printf("Jogando %dx cartas de nivel %d\n", quantidade, nivel);
+    printf("Jogando %dx cartas de nivel %d\n", quantidade, (nivel+1));
     if (coringas > 0) {
         printf("junto com %dx coringas\n", coringas);
     }
