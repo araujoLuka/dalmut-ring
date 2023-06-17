@@ -234,8 +234,11 @@ void dar_cartas() {
 
             //
 
-            id_prox_a_ganhar_carta = (id_prox_a_ganhar_carta + 1) % computador.qtd_maquinas;
             cartas_a_dar --;
         }
+
+        //
+
+        id_prox_a_ganhar_carta = (id_prox_a_ganhar_carta + 1) % computador.qtd_maquinas;
     }
 }
