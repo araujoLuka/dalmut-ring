@@ -28,7 +28,7 @@ extern mensagem recebida;
 void prepara_deck() {
     // preenche o deck com as cartas normais
     for (int i = 0; i < 12; i++) {
-        cartas.cartas[i] = i;
+        cartas.cartas[i] = (i+1);
     }
 
     // coloca 2 coringas
