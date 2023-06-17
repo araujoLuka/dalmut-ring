@@ -12,7 +12,7 @@ all : $(EXE) clean
 #--
 
 
-CFLAGS = -Wall
+CFLAGS = -g -Wall
 #LDLIBS =
 
 
