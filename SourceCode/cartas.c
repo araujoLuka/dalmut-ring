@@ -77,7 +77,7 @@ void printa_cartas() {
 
     for(int i = 0; i < 12; i++) {
         if (cartas.cartas[i] > 0) {
-            printf("[%d] quantidade: %d\n", (i+1), cartas.cartas[i]);
+            printf("[%d] quantidade: %d\n", i, cartas.cartas[i]);
         }
     }
 
