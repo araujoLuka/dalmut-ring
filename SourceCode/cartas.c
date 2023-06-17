@@ -181,7 +181,7 @@ void jogar_cartas() {
 
     //
 
-    enviar_mensagem((char) MEN_JOGADA, computador.id, (1 << computador.id), (char)nivel, (char)(quantidade + coringas));
+    enviar_mensagem((char) MEN_JOGADA, computador.id, computador.confirm_biometria, (char)nivel, (char)(quantidade + coringas));
     protocolo_de_tratamento();
 
     //
@@ -229,7 +229,7 @@ void dar_cartas() {
             //
             
             cartas.cartas[nivel] --;
-            enviar_mensagem((char) MEN_COMPRANDO_CARTA, computador.id, (1 << computador.id), (char)nivel, (char)id_prox_a_ganhar_carta);
+            enviar_mensagem((char) MEN_COMPRANDO_CARTA, computador.id, computador.confirm_biometria, (char)nivel, (char)id_prox_a_ganhar_carta);
             protocolo_de_tratamento();
 
         }
