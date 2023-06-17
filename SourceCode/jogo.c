@@ -247,7 +247,7 @@ void init_jogo() {
     jogo.id_terminados = malloc(computador.qtd_maquinas * sizeof(int));
     jogo.qtd_terminados = 0;
 
-    jogo.lastPlayed_nivel = 0;
+    jogo.lastPlayed_nivel = 14;
     jogo.lastPlayed_quantidade = 0;
     jogo.lastPLayed_player = 0;
 
