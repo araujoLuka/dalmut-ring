@@ -125,7 +125,8 @@ void obtem_id() {
     //
 
     computador.confirm_biometria = 1 << computador.id;
-
+    fprintf(stderr, "DEBBUG: biometria: %d", computador.confirm_biometria);
+    
     //
 
     fprintf(stderr, "ERRO: ip dessa maquina nao esta em setup.txt\n");
