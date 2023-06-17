@@ -77,7 +77,7 @@ void printa_cartas() {
 
     for(int i = 0; i < 12; i++) {
         if (cartas.cartas[i] > 0) {
-            printf("[%d] quantidade: %d\n", i, cartas.cartas[i]);
+            printf("[%d] quantidade: %d\n", (i+1), cartas.cartas[i]);
         }
     }
 
@@ -201,7 +201,7 @@ void jogar_cartas() {
 // aleatoriamente da as cartas para as outras maquinas
 // 1 por 1 em ordem 'horaria'
 void dar_cartas() {
-    int cartas_a_dar = 80 - (80/computador.qtd_maquinas);
+    int cartas_a_dar = 80;
     int id_prox_a_ganhar_carta = 0;
 
     //
@@ -232,13 +232,11 @@ void dar_cartas() {
             enviar_mensagem((char) MEN_COMPRANDO_CARTA, computador.id, computador.confirm_biometria, (char)nivel, (char)id_prox_a_ganhar_carta);
             protocolo_de_tratamento();
 
-            //
-
-            cartas_a_dar --;
         }
 
         //
 
+        cartas_a_dar --;
         id_prox_a_ganhar_carta = (id_prox_a_ganhar_carta + 1) % computador.qtd_maquinas;
     }
 }
