@@ -179,7 +179,7 @@ void protocolo_de_tratamento() {
                 case (2) :
                     // todos receberam a mensagem ja
                     if (recebida.conteudo1 == 0) {
-                        enviar_mensagem((char) MEN_CONEXAO, recebida.origem, recebida.confirmacao + computador.confirm_biometria, (char) 1, recebida.conteudo2);
+                        enviar_mensagem((char) MEN_CONEXAO, recebida.origem, computador.confirm_biometria, (char) 1, recebida.conteudo2);
                         protocolo_de_tratamento();
                     }
                     return;
