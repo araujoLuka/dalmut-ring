@@ -109,13 +109,12 @@ void verifica_vitoria() {
 
 int loop_jogo() {
 
+    enviar_mensagem((char) MEN_CONEXAO, computador.id, (1 << computador.id), 0, 0);
+
+    //
+
     while(jogo.estado_jogo == JOGO_ESTADO_CONECCOES) {
-        if (jogo.bastao == 1) {
-            enviar_mensagem((char) MEN_CONEXAO, computador.id, (1 << computador.id), 0, 0);
-            protocolo_de_tratamento();
-        } else {
-            protocolo_de_tratamento();
-        }
+        protocolo_de_tratamento();
     }
 
     //-----------------------------------------------------------------
