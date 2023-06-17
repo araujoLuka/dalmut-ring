@@ -83,6 +83,11 @@ void verifica_ultimo_jogador() {
     if (jogo.qtd_terminados >= computador.qtd_maquinas - 1) {
         // logo esse eh o ultimo jogador
         decreta_vitoria();
+
+        //
+
+        enviar_mensagem((char)MEN_FIM, (char)computador.id, computador.confirm_biometria, 0, 0);
+        protocolo_de_tratamento();
     }
 }
 
@@ -206,6 +211,10 @@ int loop_jogo() {
                 case(3) :   // ENCERRA JOGO
                     enviar_mensagem((char) MEN_EXIT, (char)computador.id, computador.confirm_biometria, 0, 0);
                     protocolo_de_tratamento();
+                break;
+
+                default :
+                    printf("Comando invalido\n");
                 break;
             }
         }
