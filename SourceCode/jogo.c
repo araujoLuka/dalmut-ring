@@ -252,6 +252,8 @@ void init_jogo() {
 
     //
 
+    abrir_socket();
+
     obtem_ip();
     obtem_id();
 
