@@ -23,8 +23,9 @@ extern deck cartas;
 
 // envia uma mensagem
 void enviar_mensagem(char tipo, char origem, int confirmacao, char conteudo1, char conteudo2) {
+
     usleep(10);
-    
+
     //
 
     enviada.confirmacao = confirmacao;
@@ -114,7 +115,7 @@ int verifica_confirmacoes() {
     // caso a mensagem tenha dado uma volta completa
     if (recebida.origem == computador.id) {
         // caso todos confirmaram
-        if ((computador.confirmacao_completa ^ recebida.confirmacao) == 0) {
+        if ((computador.confirmacao_completa - recebida.confirmacao) == 0) {
             return 2;
         } else {
             // algo de errado aconteceu, um computador nao confirmou
@@ -139,6 +140,8 @@ int verifica_confirmacoes() {
 
 // recebe 1 mensagem e trata ela
 void protocolo_de_tratamento() {
+
+    fpritnf(stderr, "DEBUGG: Entrou no protocolo de tratamento\n");
 
     // tranca o processo ate receber uma mensagem
     while(!receber_mensagem());
@@ -175,14 +178,14 @@ void protocolo_de_tratamento() {
                 case (2) :
                     // todos receberam a mensagem ja
                     if (recebida.conteudo1 == 0) {
-                        enviar_mensagem((char) MEN_CONEXAO, recebida.origem, recebida.confirmacao | (1 << computador.id), (char) 1, recebida.conteudo2);
+                        enviar_mensagem((char) MEN_CONEXAO, recebida.origem, recebida.confirmacao + (1 << computador.id), (char) 1, recebida.conteudo2);
                         protocolo_de_tratamento();
                     }
                     return;
                 break;
             }
 
-            enviar_mensagem((char) MEN_CONEXAO, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
+            enviar_mensagem((char) MEN_CONEXAO, recebida.origem, recebida.confirmacao + (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
 
         break;
 
@@ -218,7 +221,7 @@ void protocolo_de_tratamento() {
                 break;
             }
 
-            enviar_mensagem((char) MEN_BASTAO, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
+            enviar_mensagem((char) MEN_BASTAO, recebida.origem, recebida.confirmacao + (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
 
         break;
         
@@ -249,7 +252,7 @@ void protocolo_de_tratamento() {
                 break;
             }
 
-            enviar_mensagem((char) MEN_JOGO_INI, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
+            enviar_mensagem((char) MEN_JOGO_INI, recebida.origem, recebida.confirmacao + (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
 
         break;
 
@@ -286,7 +289,7 @@ void protocolo_de_tratamento() {
                 break;
             }
 
-            enviar_mensagem((char) MEN_JOGADOR_VENCEU, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
+            enviar_mensagem((char) MEN_JOGADOR_VENCEU, recebida.origem, recebida.confirmacao + (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
 
         break;
 
@@ -331,7 +334,7 @@ void protocolo_de_tratamento() {
                 break;
             }
 
-            enviar_mensagem((char) MEN_COMPRANDO_CARTA, recebida.origem, recebida.confirmacao | (1 << computador.id), (char)recebida.conteudo1, (char)recebida.conteudo2);
+            enviar_mensagem((char) MEN_COMPRANDO_CARTA, recebida.origem, recebida.confirmacao + (1 << computador.id), (char)recebida.conteudo1, (char)recebida.conteudo2);
         break;
 
 
@@ -372,7 +375,7 @@ void protocolo_de_tratamento() {
                 break;
             }
 
-            enviar_mensagem((char) MEN_JOGADA, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
+            enviar_mensagem((char) MEN_JOGADA, recebida.origem, recebida.confirmacao + (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
         break;
 
 
@@ -408,7 +411,7 @@ void protocolo_de_tratamento() {
                 break;
             }
             
-            enviar_mensagem((char) MEN_PULANDO, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
+            enviar_mensagem((char) MEN_PULANDO, recebida.origem, recebida.confirmacao + (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
 
         break;
 
@@ -442,7 +445,7 @@ void protocolo_de_tratamento() {
                 break;
             }
             
-            enviar_mensagem((char) MEN_RODADA_ACABOU, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
+            enviar_mensagem((char) MEN_RODADA_ACABOU, recebida.origem, recebida.confirmacao + (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
 
         break;
 
@@ -473,7 +476,7 @@ void protocolo_de_tratamento() {
                 break;
             }
             
-            enviar_mensagem((char) MEN_FIM, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
+            enviar_mensagem((char) MEN_FIM, recebida.origem, recebida.confirmacao + (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
 
         break;
 
@@ -503,7 +506,7 @@ void protocolo_de_tratamento() {
                 break;
             }
             
-            enviar_mensagem((char) MEN_EXIT, recebida.origem, recebida.confirmacao | (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
+            enviar_mensagem((char) MEN_EXIT, recebida.origem, recebida.confirmacao + (1 << computador.id), recebida.conteudo1, recebida.conteudo2);
 
         break;
 
