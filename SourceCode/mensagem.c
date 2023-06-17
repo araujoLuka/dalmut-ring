@@ -142,7 +142,7 @@ int verifica_confirmacoes() {
 // recebe 1 mensagem e trata ela
 void protocolo_de_tratamento() {
 
-    fpritnf(stderr, "DEBUGG: Entrou no protocolo de tratamento\n");
+    fprintf(stderr, "DEBUGG: Entrou no protocolo de tratamento\n");
 
     // tranca o processo ate receber uma mensagem
     while(!receber_mensagem());
