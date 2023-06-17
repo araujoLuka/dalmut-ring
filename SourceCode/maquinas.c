@@ -44,9 +44,17 @@ void ler_setup() {
 
     //
 
+    char buffer[14];
+
     // obtem os ips salvos em setup.txt
     for (int i = 0; i < computador.qtd_maquinas; i++) {
-        fgets(computador.todos_ips[i], 14, file);
+        fgets(buffer, 14, file);
+        while(!strcmp(buffer, "\n")) {
+            fgets(buffer, 14, file);
+        }
+        buffer[strcspn(buffer, "\n")] = 0;
+        printf("%s\n", buffer);
+        strcpy(computador.todos_ips[i], buffer);
     }
 
     //
