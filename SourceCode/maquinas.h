@@ -3,6 +3,7 @@ typedef struct maquina {
     char** todos_ips;           // de setup.txt, obtem todos os ips em ordem
 
     int confirmacao_completa;   // salva o valor de todos as maquinas confirmarem
+    int confirm_biometria;      // valor de confirmacao desse computador
     // simplifica um pouco o codigo e impede calcular td hr isso
 
     char ip[14];                // ip dessa maquina
