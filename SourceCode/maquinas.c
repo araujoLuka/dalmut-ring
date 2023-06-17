@@ -97,18 +97,9 @@ void abrir_socket() {
 
 // obtem o ip dessa maquina
 void obtem_ip() {
-    
-    abrir_socket();
+    printf("Digite o seu IP: ");
 
-    //
-
-    struct ifreq ifr;
-
-    ifr.ifr_addr.sa_family = AF_INET;
-    strncpy(ifr.ifr_name, "eth0", IFNAMSIZ-1);
-    ioctl(computador.socket, SIOCGIFADDR, &ifr);
-
-    strncpy(computador.ip, inet_ntoa(((struct sockaddr_in *)&ifr.ifr_addr)->sin_addr), 14);
+    scanf("%s", computador.ip);
 }
 
 
