@@ -64,9 +64,8 @@ void ler_setup() {
 
     // calcula os bits de confirmacao quando completo
     for (int i = 0; i < computador.qtd_maquinas; i++) {
-        computador.confirmacao_completa += soma;
-        
         soma += i;
+        computador.confirmacao_completa += soma;
     }
     // caso tenha 4 maquinas
     // teremos cc = 64
