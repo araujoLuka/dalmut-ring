@@ -7,14 +7,9 @@
 
 
 
-estado_jogo jogo;
+maquina computador;
 
-extern mensagem recebida;
-extern mensagem enviada;
-
-extern maquina computador;
-
-extern deck cartas;
+extern estado_jogo jogo;
 
 
 
@@ -23,81 +18,59 @@ extern deck cartas;
 
 
 
-// passa o bastao para a proxima maquina
-void passar_bastao(int id) {
+// le o arquivo setup.txt e salva seus dados
+void ler_setup() {
 
-    // remove o bastao desse computador
-    jogo.bastao = 0;
-
-    //
-
-    enviar_mensagem((char) MEN_BASTAO, (char) computador.id, (1 << computador.id), (char)id, 0);
-    protocolo_de_tratamento();
-}
-
-
-
-//-----------------------------------------------------------------
-
-
-
-// verifica se todas as maquinas pularam seguido
-// se sim envia mensagem para comecar uma nova rodada
-void verifica_pulos_seguidos() {
-    // se todas as maquinas pularam seguido
-    if (jogo.contador_pulos >= computador.qtd_maquinas) {
-        int id_last_played = jogo.lastPLayed_player;
-
-        //
-
-        enviar_mensagem((char) MEN_RODADA_ACABOU, (char) computador.id, (1 << computador.id), 0, 0);
-        protocolo_de_tratamento();
-
-        //
-
-        passar_bastao(id_last_played);
-    }
-}
-
-
-
-//-----------------------------------------------------------------
-
-
-
-// decreta vitoria desse jogador
-// envia mensagem a todos e para de jogar
-void decreta_vitoria() {
-    jogo.terminou = 1;
-
-    //
-
-    enviar_mensagem((char) MEN_JOGADOR_VENCEU, (char) computador.id, 0, 0, 0);
-    protocolo_de_tratamento();
-}
-
-
-// verifica se esse eh o ultimo jogador faltando
-// se sim decreta vitoria
-void verifica_ultimo_jogador() {
-    if (jogo.qtd_terminados >= computador.qtd_maquinas - 1) {
-        // logo esse eh o ultimo jogador
-        decreta_vitoria();
-    }
-}
-
-
-// verifica condicao de vitoria
-// se sim decreta vitoria
-void verifica_vitoria() {
-    if (!verificar_cartas()) {
-        // ainda ha cartas nesse jogador
+    // abre o arquivo setup.txt
+    FILE* file = fopen("./setup.txt", "r");
+    if (file == NULL) {
+        fprintf(stderr, "ERRO: ao abrir arquivo setup.txt\n");
         return;
     }
 
     //
 
-    decreta_vitoria();
+    // obtem quantas maquinas teremos no total
+    fscanf(file, "%d", &computador.qtd_maquinas);
+
+    //
+
+    // alloca o espaco para todos os ips
+    computador.todos_ips = malloc(computador.qtd_maquinas * sizeof(char*));   // qtd de ips
+    for (int i = 0; i < computador.qtd_maquinas; i++) {
+        // 14 eh o numero de chars que um ip precisa +1 para determinar o fim da string
+        computador.todos_ips[i] = malloc(14 * sizeof(char));
+    }
+
+    //
+
+    char buffer[14];
+
+    // obtem os ips salvos em setup.txt
+    for (int i = 0; i < computador.qtd_maquinas; i++) {
+        fgets(buffer, 14, file);
+        while(!strcmp(buffer, "\n")) {
+            fgets(buffer, 14, file);
+        }
+        buffer[strcspn(buffer, "\n")] = 0;
+        printf("%s\n", buffer);
+        strcpy(computador.todos_ips[i], buffer);
+    }
+
+    //
+
+    computador.confirmacao_completa = 0;
+    int soma = 1;
+
+    // calcula os bits de confirmacao quando completo
+    for (int i = 0; i < computador.qtd_maquinas; i++) {
+        soma += i;
+        computador.confirmacao_completa += soma;
+    }
+    // caso tenha 4 maquinas
+    // teremos cc = 64
+    // ao fazer um xor desse valor com a confirmacao
+    // se resultar em 0 ent todos os bits batem.
 
 }
 
@@ -107,126 +80,56 @@ void verifica_vitoria() {
 
 
 
-int loop_jogo() {
-
-    enviar_mensagem((char) MEN_CONEXAO, computador.id, (1 << computador.id), 0, 0);
-
-    //
-
-    while(jogo.estado_jogo == JOGO_ESTADO_CONECCOES) {
-        protocolo_de_tratamento();
-    }
-
-    //-----------------------------------------------------------------
-
-    if (computador.id == 0) {
-        prepara_deck();
-    } else {
-        limpa_deck();
+// abrir o socket
+void abrir_socket() {
+    computador.socket = socket(PF_INET, SOCK_DGRAM, 0);
+    if (computador.socket < 0) {
+        fprintf(stderr, "ERRO: na criacao socket\n");
     }
 
     //
 
-    while(jogo.estado_jogo == JOGO_ESTADO_COMPRANDO) {
-        if (!jogo.bastao) {
-            printf("\nVoce nao possui o bastao, esperando mensagem...\n");
-            protocolo_de_tratamento();
-        }
+    struct sockaddr_in name;
+    name.sin_family = AF_INET;
+    name.sin_addr.s_addr = INADDR_ANY;
+    name.sin_port = PORT;
 
-        //
-
-        if (jogo.bastao) {
-            dar_cartas();
-
-            //
-
-            enviar_mensagem((char) MEN_JOGO_INI, computador.id, (1 << computador.id), 0, 0);
-            protocolo_de_tratamento();
-        }
-    }
+    size_t size = sizeof(name);
 
     //
 
-    printa_cartas();
-
-    //-----------------------------------------------------------------
-
-    int input;
-    while(jogo.estado_jogo == JOGO_ESTADO_INICIADO) {
-        if (!jogo.bastao) {
-            printf("\nVoce nao possui o bastao, esperando mensagem...\n");
-            protocolo_de_tratamento();
-        }
-
-        //
-
-        if (jogo.bastao) {
-            verifica_ultimo_jogador();
-
-            //
-
-            if (jogo.terminou) {
-                passar_bastao(computador.id_next);
-            }
-
-            //
-
-            printa_cartas();
-
-            printf("\nQual a sua acao?\n");
-            printf("(1) jogar cartas\n");
-            printf("(2) pular sua vez\n");
-            printf("(3) ENCERRAR JOGO\n");
-
-            scanf("%d", &input);
-            
-            //
-
-            switch(input) {
-                case(1) :   // Joga cartas
-                    jogar_cartas();
-                break;
-
-                case(2) :   // Pula sua vez
-                    enviar_mensagem((char) MEN_PULANDO, (char)computador.id, (1 << computador.id), 0, 0);
-                    protocolo_de_tratamento();
-                    passar_bastao(computador.id_next);
-                break;
-
-                case(3) :   // ENCERRA JOGO
-                    enviar_mensagem((char) MEN_EXIT, (char)computador.id, (1 << computador.id), 0, 0);
-                    protocolo_de_tratamento();
-                break;
-            }
-        }
-
+    if (bind (computador.socket, (struct sockaddr *) &name, size) < 0) {
+        perror ("bind");
+        exit (EXIT_FAILURE);
     }
+}
 
-    //-----------------------------------------------------------------
 
-    if (jogo.estado_jogo == JOGO_ESTADO_FIM) {
-        printf("\t\t\nJOGO ACABOU, todos os jogadores ganharam\n\n");
+// obtem o ip dessa maquina
+void obtem_ip() {
+    printf("Digite o seu IP: ");
 
-        printf("\trank:\n");
+    scanf("%s", computador.ip);
+}
 
-        // printa a lista de jogadores vitoriosos em ordem de vitoria
-        int id;
-        for (int i = 0; i < computador.qtd_maquinas; i++) {
-            id = jogo.id_terminados[i];
-            printf("\t - - - id: %3d  |  ip: %s\n", id, computador.todos_ips[id]);
+
+// tendo o ip, obtem a posicao de id dessa maquina na lista setup.txt
+void obtem_id() {
+    for (int i = 0; i < computador.qtd_maquinas; i++) {
+        if (!strcmp(computador.ip, computador.todos_ips[i])) {
+            computador.id = i;
+            return;
         }
     }
 
     //
 
-    if (jogo.estado_jogo == JOGO_ESTADO_EXIT) {
-        fprintf(stderr, "\t\t\nJOGO ENCERRADO, input de usuario em alguma maquina\n");
-    }
+    computador.confirm_biometria = 1 << computador.id;
 
-    //-----------------------------------------------------------------
+    //
 
-    encerra_coneccoes();
-    return 0;
+    fprintf(stderr, "ERRO: ip dessa maquina nao esta em setup.txt\n");
+    return;
 }
 
 
@@ -234,43 +137,34 @@ int loop_jogo() {
 //-----------------------------------------------------------------
 
 
-// inicia as variaveis do jogo e alloca espaco
-void init_jogo() {
-    ler_setup();
 
-    //
+// inicia a coneccao entre os vizinhos
+// tanto com o anterior quanto o proximo
+void id_vizinhos() {
 
-    jogo.bastao = 0;
-    jogo.contador_pulos = 0;
-    jogo.estado_jogo = JOGO_ESTADO_CONECCOES;
+    computador.id_next = (computador.id + 1) % computador.qtd_maquinas;
 
-    jogo.id_terminados = malloc(computador.qtd_maquinas * sizeof(int));
-    jogo.qtd_terminados = 0;
-
-    jogo.lastPlayed_nivel = 0;
-    jogo.lastPlayed_quantidade = 0;
-    jogo.lastPLayed_player = 0;
-
-    jogo.terminou = 0;
-
-    //
-
-    abrir_socket();
-
-    obtem_ip();
-    obtem_id();
-
-    //
-
-    if (computador.id == 0) {
-        jogo.bastao = 1;
+    if (computador.id_next == computador.id) {
+        fprintf(stderr, "ERRO: id do proximo eh igual o atual\n");
+        return;
     }
 
     //
 
-    id_vizinhos();
+    computador.id_prev = (computador.id - 1);
+    if (computador.id_prev < 0) {
+        computador.id_prev += computador.qtd_maquinas;
+    }
 
-    //
+    if (computador.id_prev == computador.id) {
+        fprintf(stderr, "ERRO: id do anterior eh igual o atual\n");
+        return;
+    }
 
-    loop_jogo();
+}
+
+
+// fecha o socket aberto
+void encerra_coneccoes() {
+    close(computador.socket);
 }
