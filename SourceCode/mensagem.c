@@ -425,7 +425,7 @@ void protocolo_de_tratamento() {
             // caso o id de origem seja o mesmo que o da proxima maquina
             // nao envia para frente a mensagem pq acabo o anel
 
-            jogo.lastPlayed_nivel = 0;
+            jogo.lastPlayed_nivel = 14;
             jogo.lastPlayed_quantidade = 0;
             jogo.lastPLayed_player = 0;
 
