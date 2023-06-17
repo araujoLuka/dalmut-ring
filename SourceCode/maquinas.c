@@ -118,15 +118,14 @@ void obtem_id() {
     for (int i = 0; i < computador.qtd_maquinas; i++) {
         if (!strcmp(computador.ip, computador.todos_ips[i])) {
             computador.id = i;
+
+            computador.confirm_biometria = 1 << computador.id;
+            fprintf(stderr, "DEBBUG: biometria: %d", computador.confirm_biometria);
+
             return;
         }
     }
 
-    //
-
-    computador.confirm_biometria = 1 << computador.id;
-    fprintf(stderr, "DEBBUG: biometria: %d", computador.confirm_biometria);
-    
     //
 
     fprintf(stderr, "ERRO: ip dessa maquina nao esta em setup.txt\n");
