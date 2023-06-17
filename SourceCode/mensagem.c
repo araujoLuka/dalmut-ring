@@ -91,11 +91,7 @@ int receber_mensagem() {
 
     //
 
-    strcpy((char*) &recebida, message);
-
-    //
-
-    fprintf(stderr, "DEBUGG: %d , %d", (int)recebida.origem, (int)recebida.tipo);
+    bcopy(message, recebida, sizeof(mensagem));
 
     //
 
