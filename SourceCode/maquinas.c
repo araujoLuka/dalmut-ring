@@ -120,7 +120,7 @@ void obtem_id() {
             computador.id = i;
 
             computador.confirm_biometria = 1 << computador.id;
-            fprintf(stderr, "DEBBUG: biometria: %d", computador.confirm_biometria);
+            fprintf(stderr, "DEBBUG: biometria: %d\n", computador.confirm_biometria);
 
             return;
         }
