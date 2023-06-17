@@ -355,7 +355,7 @@ void protocolo_de_tratamento() {
 
             //
 
-            printf("\n\nJogador %d jogou %dx cartas de nivel %d\n\n", jogo.lastPLayed_player, jogo.lastPlayed_nivel, jogo.lastPlayed_quantidade);
+            printf("\n\nJogador %d jogou %dx cartas de nivel %d\n\n", jogo.lastPLayed_player, jogo.lastPlayed_quantidade, jogo.lastPlayed_nivel);
 
             //
 
